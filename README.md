@@ -22,7 +22,7 @@ Automate your VM so that it fetches the current weather for a chosen city on sta
   - Fetches weather from wttr.in
   - Generates clean MOTD
   - Includes bonus features (uptime, disk usage)
-  - Logs activities to `/var/log/weather.log`
+  - Logs activities to systemd journal
 
 **Copy the content from `Weather.sh` file to `/usr/local/sbin/weather.sh`**
 
@@ -57,8 +57,7 @@ sudo chmod 755 /usr/local/sbin/weather.sh
 sudo chmod 644 /etc/systemd/system/weather.service
 
 # 3. Create log file directory and file
-sudo touch /var/log/weather.log
-sudo chmod 644 /var/log/weather.log
+# Note: Logging goes to systemd journal, no separate log file needed
 
 # 4. Reload systemd and enable service
 sudo systemctl daemon-reload 
@@ -107,7 +106,8 @@ cat /etc/motd
 
 ### View Logs
 ```bash
-sudo tail -f /var/log/weather.log
+# View service logs from systemd journal
+sudo journalctl -u weather.service -f
 ```
 
 ## 🛠️ Troubleshooting
@@ -144,7 +144,7 @@ sudo /usr/local/sbin/weather.sh
 ### Bonus Features ✅
 - [x] Uptime information in MOTD
 - [x] Disk usage information in MOTD
-- [x] Weather fetch logging to `/var/log/weather.log`
+- [x] Weather fetch logging to systemd journal
 - [x] Safe script execution (`set -euo pipefail`)
 - [x] Command logging with timestamps
 
