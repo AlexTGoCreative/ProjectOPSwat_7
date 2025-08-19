@@ -5,7 +5,9 @@ set -euo pipefail
 
 # Function to log messages
 log_message() {
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1"
+    local message="[$(date '+%Y-%m-%d %H:%M:%S')] $1"
+    echo "$message"
+    echo "$message" >> /var/log/weather.log
 }
 
 # Load environment variables from config file
@@ -74,6 +76,8 @@ generate_motd() {
     local weather_info="$1"
     local hostname=$(hostname)
     local current_time=$(date '+%Y-%m-%d %H:%M:%S')
+    local uptime=$(uptime -p | sed 's/up //')
+    local disk_usage=$(df -h / | awk 'NR==2 {print $5}')
     log_message "Generating MOTD"
 
     # Create clean MOTD (overwrite, not append)
@@ -86,6 +90,8 @@ City: $CITY
 Weather today: $weather_info
 Hostname: $hostname
 Time: $current_time
+Uptime: $uptime
+Disk Usage: $disk_usage
 
 ====================================
 MOTD_END
